@@ -1,0 +1,1 @@
+# madt-istio-thrift
