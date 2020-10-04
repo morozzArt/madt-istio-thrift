@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import sys
 
 from thrift import Thrift
@@ -13,7 +11,7 @@ from currency import CurrencyManager
 from currency.ttypes import *
 
 try:
-    transport = TSocket.TSocket('localhost', 9090)
+    transport = TSocket.TSocket('localhost', 9091)
     transport = TTransport.TBufferedTransport(transport)
     protocol = TBinaryProtocol.TBinaryProtocol(transport)
     client = CurrencyManager.Client(protocol)

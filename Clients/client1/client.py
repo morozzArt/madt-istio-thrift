@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import sys
 sys.path.append('./src')
 
@@ -21,7 +19,7 @@ try:
     client = CountryManager.Client(protocol)
     transport.open()
 
-    country = client.get_country('Russia')
+    country = client.get_country('USA')
     print("{}:\n\tCapital is {}\n\tCurrency is {}".format(country.name, country.capital, country.currency))
 
 except Thrift.TException as tx:

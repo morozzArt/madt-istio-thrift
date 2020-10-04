@@ -27,11 +27,11 @@ class CurrencyManagerHandler:
 			raise Thrift.TApplicationException(TApplicationException.INVALID_MESSAGE_TYPE, "Value is less than zero")
 		if src not in coefficients or dest not in coefficients[src]:
 			raise Thrift.TApplicationException(TApplicationException.INVALID_MESSAGE_TYPE, "Unknown currency")
-		return value * coefficients[src][dest]		
+		return value * coefficients[src][dest]
 
 handler = CurrencyManagerHandler()
 processor = CurrencyManager.Processor(handler)
-transport = TSocket.TServerSocket(port=9090)
+transport = TSocket.TServerSocket(port=9091)
 tfactory = TTransport.TBufferedTransportFactory()
 pfactory = TBinaryProtocol.TBinaryProtocolFactory()
 
