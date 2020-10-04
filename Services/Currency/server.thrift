@@ -1,3 +1,5 @@
+namespace py currency_server
+
 service CurrencyManager {
-    i32 convert(1: string dst, 2: string src, 3: i32 value)
+    double convert(1: string dst, 2: string src, 3: double value)
 }
