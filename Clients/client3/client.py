@@ -1,22 +1,26 @@
-import sys
+#!/usr/bin/env python
 
-from thrift import Thrift
+import sys
+sys.path.append('./src')
+
+from difftime import TimeManager
+from difftime.ttypes import *
+
 from thrift.transport import TSocket
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
-
-sys.path.append('./src')
-
-from currency import CurrencyManager
-from currency.ttypes import *
+from thrift import Thrift
 
 try:
-    transport = TSocket.TSocket('localhost', 9091)
+    transport = TSocket.TSocket('localhost', 9090)
+
     transport = TTransport.TBufferedTransport(transport)
+
     protocol = TBinaryProtocol.TBinaryProtocol(transport)
-    client = CurrencyManager.Client(protocol)
+
+    client = TimeManager.Client(protocol)
     transport.open()
-    print(client.convert("RUB", "USD", 100))
+    print(client.get_time("Russia", "USA"))
     transport.close()
 
 except Thrift.TException as tx:
