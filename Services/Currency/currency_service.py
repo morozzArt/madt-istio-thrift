@@ -2,8 +2,8 @@ import sys
 
 sys.path.append('./gen-py')
 
-from currency_server import CurrencyManager
-from currency_server.ttypes import *
+from currency import CurrencyManager
+from currency.ttypes import *
 
 from thrift import Thrift
 from thrift.transport import TSocket

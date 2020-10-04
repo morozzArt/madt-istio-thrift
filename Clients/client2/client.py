@@ -7,10 +7,10 @@ from thrift.transport import TSocket
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
 
-sys.path.append('Currency/gen-py')
+sys.path.append('./src')
 
-from currency_server import CurrencyManager
-from currency_server.ttypes import *
+from currency import CurrencyManager
+from currency.ttypes import *
 
 try:
     transport = TSocket.TSocket('localhost', 9090)
