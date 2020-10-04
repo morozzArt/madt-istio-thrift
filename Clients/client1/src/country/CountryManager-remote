@@ -15,8 +15,8 @@ from thrift.transport import TSocket
 from thrift.transport import THttpClient
 from thrift.protocol import TBinaryProtocol
 
-from server import CountryManager
-from server.ttypes import *
+from country import CountryManager
+from country.ttypes import *
 
 if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print ''
