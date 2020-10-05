@@ -19,10 +19,12 @@ all_structs = []
 
 
 class Iface(object):
-    def get_country(self, name):
+    def convert(self, dst, src, value):
         """
         Parameters:
-         - name
+         - dst
+         - src
+         - value
 
         """
         pass
@@ -35,24 +37,28 @@ class Client(Iface):
             self._oprot = oprot
         self._seqid = 0
 
-    def get_country(self, name):
+    def convert(self, dst, src, value):
         """
         Parameters:
-         - name
+         - dst
+         - src
+         - value
 
         """
-        self.send_get_country(name)
-        return self.recv_get_country()
+        self.send_convert(dst, src, value)
+        return self.recv_convert()
 
-    def send_get_country(self, name):
-        self._oprot.writeMessageBegin('get_country', TMessageType.CALL, self._seqid)
-        args = get_country_args()
-        args.name = name
+    def send_convert(self, dst, src, value):
+        self._oprot.writeMessageBegin('convert', TMessageType.CALL, self._seqid)
+        args = convert_args()
+        args.dst = dst
+        args.src = src
+        args.value = value
         args.write(self._oprot)
         self._oprot.writeMessageEnd()
         self._oprot.trans.flush()
 
-    def recv_get_country(self):
+    def recv_convert(self):
         iprot = self._iprot
         (fname, mtype, rseqid) = iprot.readMessageBegin()
         if mtype == TMessageType.EXCEPTION:
@@ -60,19 +66,19 @@ class Client(Iface):
             x.read(iprot)
             iprot.readMessageEnd()
             raise x
-        result = get_country_result()
+        result = convert_result()
         result.read(iprot)
         iprot.readMessageEnd()
         if result.success is not None:
             return result.success
-        raise TApplicationException(TApplicationException.MISSING_RESULT, "get_country failed: unknown result")
+        raise TApplicationException(TApplicationException.MISSING_RESULT, "convert failed: unknown result")
 
 
 class Processor(Iface, TProcessor):
     def __init__(self, handler):
         self._handler = handler
         self._processMap = {}
-        self._processMap["get_country"] = Processor.process_get_country
+        self._processMap["convert"] = Processor.process_convert
         self._on_message_begin = None
 
     def on_message_begin(self, func):
@@ -95,13 +101,13 @@ class Processor(Iface, TProcessor):
             self._processMap[name](self, seqid, iprot, oprot)
         return True
 
-    def process_get_country(self, seqid, iprot, oprot):
-        args = get_country_args()
+    def process_convert(self, seqid, iprot, oprot):
+        args = convert_args()
         args.read(iprot)
         iprot.readMessageEnd()
-        result = get_country_result()
+        result = convert_result()
         try:
-            result.success = self._handler.get_country(args.name)
+            result.success = self._handler.convert(args.dst, args.src, args.value)
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
@@ -113,7 +119,7 @@ class Processor(Iface, TProcessor):
             logging.exception('Unexpected exception in handler')
             msg_type = TMessageType.EXCEPTION
             result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
-        oprot.writeMessageBegin("get_country", msg_type, seqid)
+        oprot.writeMessageBegin("convert", msg_type, seqid)
         result.write(oprot)
         oprot.writeMessageEnd()
         oprot.trans.flush()
@@ -121,16 +127,20 @@ class Processor(Iface, TProcessor):
 # HELPER FUNCTIONS AND STRUCTURES
 
 
-class get_country_args(object):
+class convert_args(object):
     """
     Attributes:
-     - name
+     - dst
+     - src
+     - value
 
     """
 
 
-    def __init__(self, name=None,):
-        self.name = name
+    def __init__(self, dst=None, src=None, value=None,):
+        self.dst = dst
+        self.src = src
+        self.value = value
 
     def read(self, iprot):
         if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
@@ -143,7 +153,17 @@ class get_country_args(object):
                 break
             if fid == 1:
                 if ftype == TType.STRING:
-                    self.name = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                    self.dst = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 2:
+                if ftype == TType.STRING:
+                    self.src = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 3:
+                if ftype == TType.DOUBLE:
+                    self.value = iprot.readDouble()
                 else:
                     iprot.skip(ftype)
             else:
@@ -155,10 +175,18 @@ class get_country_args(object):
         if oprot._fast_encode is not None and self.thrift_spec is not None:
             oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
             return
-        oprot.writeStructBegin('get_country_args')
-        if self.name is not None:
-            oprot.writeFieldBegin('name', TType.STRING, 1)
-            oprot.writeString(self.name.encode('utf-8') if sys.version_info[0] == 2 else self.name)
+        oprot.writeStructBegin('convert_args')
+        if self.dst is not None:
+            oprot.writeFieldBegin('dst', TType.STRING, 1)
+            oprot.writeString(self.dst.encode('utf-8') if sys.version_info[0] == 2 else self.dst)
+            oprot.writeFieldEnd()
+        if self.src is not None:
+            oprot.writeFieldBegin('src', TType.STRING, 2)
+            oprot.writeString(self.src.encode('utf-8') if sys.version_info[0] == 2 else self.src)
+            oprot.writeFieldEnd()
+        if self.value is not None:
+            oprot.writeFieldBegin('value', TType.DOUBLE, 3)
+            oprot.writeDouble(self.value)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
         oprot.writeStructEnd()
@@ -176,14 +204,16 @@ class get_country_args(object):
 
     def __ne__(self, other):
         return not (self == other)
-all_structs.append(get_country_args)
-get_country_args.thrift_spec = (
+all_structs.append(convert_args)
+convert_args.thrift_spec = (
     None,  # 0
-    (1, TType.STRING, 'name', 'UTF8', None, ),  # 1
+    (1, TType.STRING, 'dst', 'UTF8', None, ),  # 1
+    (2, TType.STRING, 'src', 'UTF8', None, ),  # 2
+    (3, TType.DOUBLE, 'value', None, None, ),  # 3
 )
 
 
-class get_country_result(object):
+class convert_result(object):
     """
     Attributes:
      - success
@@ -204,9 +234,8 @@ class get_country_result(object):
             if ftype == TType.STOP:
                 break
             if fid == 0:
-                if ftype == TType.STRUCT:
-                    self.success = Country()
-                    self.success.read(iprot)
+                if ftype == TType.DOUBLE:
+                    self.success = iprot.readDouble()
                 else:
                     iprot.skip(ftype)
             else:
@@ -218,10 +247,10 @@ class get_country_result(object):
         if oprot._fast_encode is not None and self.thrift_spec is not None:
             oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
             return
-        oprot.writeStructBegin('get_country_result')
+        oprot.writeStructBegin('convert_result')
         if self.success is not None:
-            oprot.writeFieldBegin('success', TType.STRUCT, 0)
-            self.success.write(oprot)
+            oprot.writeFieldBegin('success', TType.DOUBLE, 0)
+            oprot.writeDouble(self.success)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
         oprot.writeStructEnd()
@@ -239,9 +268,9 @@ class get_country_result(object):
 
     def __ne__(self, other):
         return not (self == other)
-all_structs.append(get_country_result)
-get_country_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [Country, None], None, ),  # 0
+all_structs.append(convert_result)
+convert_result.thrift_spec = (
+    (0, TType.DOUBLE, 'success', None, None, ),  # 0
 )
 fix_spec(all_structs)
 del all_structs

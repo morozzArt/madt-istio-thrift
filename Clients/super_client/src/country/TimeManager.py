@@ -19,10 +19,11 @@ all_structs = []
 
 
 class Iface(object):
-    def get_country(self, name):
+    def get_time(self, country_1, country_2):
         """
         Parameters:
-         - name
+         - country_1
+         - country_2
 
         """
         pass
@@ -35,24 +36,26 @@ class Client(Iface):
             self._oprot = oprot
         self._seqid = 0
 
-    def get_country(self, name):
+    def get_time(self, country_1, country_2):
         """
         Parameters:
-         - name
+         - country_1
+         - country_2
 
         """
-        self.send_get_country(name)
-        return self.recv_get_country()
+        self.send_get_time(country_1, country_2)
+        return self.recv_get_time()
 
-    def send_get_country(self, name):
-        self._oprot.writeMessageBegin('get_country', TMessageType.CALL, self._seqid)
-        args = get_country_args()
-        args.name = name
+    def send_get_time(self, country_1, country_2):
+        self._oprot.writeMessageBegin('get_time', TMessageType.CALL, self._seqid)
+        args = get_time_args()
+        args.country_1 = country_1
+        args.country_2 = country_2
         args.write(self._oprot)
         self._oprot.writeMessageEnd()
         self._oprot.trans.flush()
 
-    def recv_get_country(self):
+    def recv_get_time(self):
         iprot = self._iprot
         (fname, mtype, rseqid) = iprot.readMessageBegin()
         if mtype == TMessageType.EXCEPTION:
@@ -60,19 +63,19 @@ class Client(Iface):
             x.read(iprot)
             iprot.readMessageEnd()
             raise x
-        result = get_country_result()
+        result = get_time_result()
         result.read(iprot)
         iprot.readMessageEnd()
         if result.success is not None:
             return result.success
-        raise TApplicationException(TApplicationException.MISSING_RESULT, "get_country failed: unknown result")
+        raise TApplicationException(TApplicationException.MISSING_RESULT, "get_time failed: unknown result")
 
 
 class Processor(Iface, TProcessor):
     def __init__(self, handler):
         self._handler = handler
         self._processMap = {}
-        self._processMap["get_country"] = Processor.process_get_country
+        self._processMap["get_time"] = Processor.process_get_time
         self._on_message_begin = None
 
     def on_message_begin(self, func):
@@ -95,13 +98,13 @@ class Processor(Iface, TProcessor):
             self._processMap[name](self, seqid, iprot, oprot)
         return True
 
-    def process_get_country(self, seqid, iprot, oprot):
-        args = get_country_args()
+    def process_get_time(self, seqid, iprot, oprot):
+        args = get_time_args()
         args.read(iprot)
         iprot.readMessageEnd()
-        result = get_country_result()
+        result = get_time_result()
         try:
-            result.success = self._handler.get_country(args.name)
+            result.success = self._handler.get_time(args.country_1, args.country_2)
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
@@ -113,7 +116,7 @@ class Processor(Iface, TProcessor):
             logging.exception('Unexpected exception in handler')
             msg_type = TMessageType.EXCEPTION
             result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
-        oprot.writeMessageBegin("get_country", msg_type, seqid)
+        oprot.writeMessageBegin("get_time", msg_type, seqid)
         result.write(oprot)
         oprot.writeMessageEnd()
         oprot.trans.flush()
@@ -121,16 +124,18 @@ class Processor(Iface, TProcessor):
 # HELPER FUNCTIONS AND STRUCTURES
 
 
-class get_country_args(object):
+class get_time_args(object):
     """
     Attributes:
-     - name
+     - country_1
+     - country_2
 
     """
 
 
-    def __init__(self, name=None,):
-        self.name = name
+    def __init__(self, country_1=None, country_2=None,):
+        self.country_1 = country_1
+        self.country_2 = country_2
 
     def read(self, iprot):
         if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
@@ -143,7 +148,12 @@ class get_country_args(object):
                 break
             if fid == 1:
                 if ftype == TType.STRING:
-                    self.name = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                    self.country_1 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 2:
+                if ftype == TType.STRING:
+                    self.country_2 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
                 else:
                     iprot.skip(ftype)
             else:
@@ -155,10 +165,14 @@ class get_country_args(object):
         if oprot._fast_encode is not None and self.thrift_spec is not None:
             oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
             return
-        oprot.writeStructBegin('get_country_args')
-        if self.name is not None:
-            oprot.writeFieldBegin('name', TType.STRING, 1)
-            oprot.writeString(self.name.encode('utf-8') if sys.version_info[0] == 2 else self.name)
+        oprot.writeStructBegin('get_time_args')
+        if self.country_1 is not None:
+            oprot.writeFieldBegin('country_1', TType.STRING, 1)
+            oprot.writeString(self.country_1.encode('utf-8') if sys.version_info[0] == 2 else self.country_1)
+            oprot.writeFieldEnd()
+        if self.country_2 is not None:
+            oprot.writeFieldBegin('country_2', TType.STRING, 2)
+            oprot.writeString(self.country_2.encode('utf-8') if sys.version_info[0] == 2 else self.country_2)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
         oprot.writeStructEnd()
@@ -176,14 +190,15 @@ class get_country_args(object):
 
     def __ne__(self, other):
         return not (self == other)
-all_structs.append(get_country_args)
-get_country_args.thrift_spec = (
+all_structs.append(get_time_args)
+get_time_args.thrift_spec = (
     None,  # 0
-    (1, TType.STRING, 'name', 'UTF8', None, ),  # 1
+    (1, TType.STRING, 'country_1', 'UTF8', None, ),  # 1
+    (2, TType.STRING, 'country_2', 'UTF8', None, ),  # 2
 )
 
 
-class get_country_result(object):
+class get_time_result(object):
     """
     Attributes:
      - success
@@ -204,9 +219,8 @@ class get_country_result(object):
             if ftype == TType.STOP:
                 break
             if fid == 0:
-                if ftype == TType.STRUCT:
-                    self.success = Country()
-                    self.success.read(iprot)
+                if ftype == TType.BYTE:
+                    self.success = iprot.readByte()
                 else:
                     iprot.skip(ftype)
             else:
@@ -218,10 +232,10 @@ class get_country_result(object):
         if oprot._fast_encode is not None and self.thrift_spec is not None:
             oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
             return
-        oprot.writeStructBegin('get_country_result')
+        oprot.writeStructBegin('get_time_result')
         if self.success is not None:
-            oprot.writeFieldBegin('success', TType.STRUCT, 0)
-            self.success.write(oprot)
+            oprot.writeFieldBegin('success', TType.BYTE, 0)
+            oprot.writeByte(self.success)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
         oprot.writeStructEnd()
@@ -239,9 +253,9 @@ class get_country_result(object):
 
     def __ne__(self, other):
         return not (self == other)
-all_structs.append(get_country_result)
-get_country_result.thrift_spec = (
-    (0, TType.STRUCT, 'success', [Country, None], None, ),  # 0
+all_structs.append(get_time_result)
+get_time_result.thrift_spec = (
+    (0, TType.BYTE, 'success', None, None, ),  # 0
 )
 fix_spec(all_structs)
 del all_structs

@@ -29,7 +29,7 @@ class TimeManagerHandler:
 
 handler = TimeManagerHandler()
 processor = TimeManager.Processor(handler)
-transport = TSocket.TServerSocket(port=9090)
+transport = TSocket.TServerSocket(port=9092)
 tfactory = TTransport.TBufferedTransportFactory()
 pfactory = TBinaryProtocol.TBinaryProtocolFactory()
 

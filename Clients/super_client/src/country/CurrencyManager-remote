@@ -16,7 +16,7 @@ else:
 from thrift.transport import TTransport, TSocket, TSSLSocket, THttpClient
 from thrift.protocol.TBinaryProtocol import TBinaryProtocol
 
-from country import CountryManager
+from country import CurrencyManager
 from country.ttypes import *
 
 if len(sys.argv) <= 1 or sys.argv[1] == '--help':
@@ -24,7 +24,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('Usage: ' + sys.argv[0] + ' [-h host[:port]] [-u url] [-f[ramed]] [-s[sl]] [-novalidate] [-ca_certs certs] [-keyfile keyfile] [-certfile certfile] function [arg1 [arg2...]]')
     print('')
     print('Functions:')
-    print('  Country get_country(string name)')
+    print('  double convert(string dst, string src, double value)')
     print('')
     sys.exit(0)
 
@@ -101,14 +101,14 @@ else:
     else:
         transport = TTransport.TBufferedTransport(socket)
 protocol = TBinaryProtocol(transport)
-client = CountryManager.Client(protocol)
+client = CurrencyManager.Client(protocol)
 transport.open()
 
-if cmd == 'get_country':
-    if len(args) != 1:
-        print('get_country requires 1 args')
+if cmd == 'convert':
+    if len(args) != 3:
+        print('convert requires 3 args')
         sys.exit(1)
-    pp.pprint(client.get_country(args[0],))
+    pp.pprint(client.convert(args[0], args[1], eval(args[2]),))
 
 else:
     print('Unrecognized method %s' % cmd)
