@@ -1,13 +1,13 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: bookinfo-gateway
+  name: custom-gateway
 spec:
   selector:
     istio: ingressgateway # use istio default controller
   servers:
   - port:
-      number: 80
+      number: 9080
       name: http
       protocol: HTTP
     hosts:
@@ -21,21 +21,13 @@ spec:
   hosts:
   - "*"
   gateways:
-  - country-gateway
+  - custom-gateway
   http:
   - match:
     - uri:
         exact: /countrypage
-    - uri:
-        prefix: /static
-    - uri:
-        exact: /login
-    - uri:
-        exact: /logout
-    - uri:
-        prefix: /api/v1/products
     route:
     - destination:
-        host: countrypage
+        host: countrypage-cluster-ip
         port:
           number: 9080

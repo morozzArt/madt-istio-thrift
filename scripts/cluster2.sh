@@ -27,12 +27,13 @@ kubectl apply --context=kind-kind-2 -f - <<EOF
 apiVersion: v1
 kind: Service
 metadata:
-  name: currency
+  name: currency-cluster-ip
   labels:
     app: currency
 spec:
   ports:
   - port: 9080
+   targetPort: 9080
     name: http
   selector:
     app: currency
@@ -55,7 +56,7 @@ spec:
     spec:
       containers:
       - name: currency
-        image: serv/currency
+        image: serv/currency:v1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080

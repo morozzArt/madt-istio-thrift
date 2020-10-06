@@ -1,4 +1,5 @@
 import sys
+import os
 sys.path.append('./src')
 
 from country import CountryManager
@@ -18,9 +19,11 @@ from thrift import Thrift
 from http.server import BaseHTTPRequestHandler,HTTPServer
 
 PORT_NUMBER = 9080
+country_host = ""
+country_host = os.environ.get('SERVICE_COUNTRY_HOST')
 
 # This class will handle any incoming request from
-# a browser 
+# a browser
 class myHandler(BaseHTTPRequestHandler):
 
     # Handler for the GET requests
@@ -32,7 +35,7 @@ class myHandler(BaseHTTPRequestHandler):
         # Send the html message
 
         try:
-            transport = TSocket.TSocket('localhost', 9090)
+            transport = TSocket.TSocket(country_host, 9080)
 
             transport = TTransport.TBufferedTransport(transport)
 
@@ -50,38 +53,38 @@ class myHandler(BaseHTTPRequestHandler):
         finally:
             transport.close()
 
-        try:
-            transport = TSocket.TSocket('localhost', 9091)
-            transport = TTransport.TBufferedTransport(transport)
-            protocol = TBinaryProtocol.TBinaryProtocol(transport)
-            client = CurrencyManager.Client(protocol)
-            transport.open()
-            print(client.convert("RUB", "USD", 100))
-            self.wfile.write(str.encode(str(client.convert("RUB", "USD", 100))))
-            transport.close()
+        # try:
+        #     transport = TSocket.TSocket('localhost', 9091)
+        #     transport = TTransport.TBufferedTransport(transport)
+        #     protocol = TBinaryProtocol.TBinaryProtocol(transport)
+        #     client = CurrencyManager.Client(protocol)
+        #     transport.open()
+        #     print(client.convert("RUB", "USD", 100))
+        #     self.wfile.write(str.encode(str(client.convert("RUB", "USD", 100))))
+        #     transport.close()
 
-        except Thrift.TException as tx:
-            print(tx.message)
-        finally:
-            transport.close()
+        # except Thrift.TException as tx:
+        #     print(tx.message)
+        # finally:
+        #     transport.close()
 
-        try:
-            transport = TSocket.TSocket('localhost', 9092)
+        # try:
+        #     transport = TSocket.TSocket('localhost', 9092)
 
-            transport = TTransport.TBufferedTransport(transport)
+        #     transport = TTransport.TBufferedTransport(transport)
 
-            protocol = TBinaryProtocol.TBinaryProtocol(transport)
+        #     protocol = TBinaryProtocol.TBinaryProtocol(transport)
 
-            client = TimeManager.Client(protocol)
-            transport.open()
-            print(client.get_time("Russia", "USA"))
-            self.wfile.write(str.encode(str(client.get_time("Russia", "USA")))           )
-            transport.close()
+        #     client = TimeManager.Client(protocol)
+        #     transport.open()
+        #     print(client.get_time("Russia", "USA"))
+        #     self.wfile.write(str.encode(str(client.get_time("Russia", "USA")))           )
+        #     transport.close()
 
-        except Thrift.TException as tx:
-            print(tx.message)
-        finally:
-            transport.close()
+        # except Thrift.TException as tx:
+        #     print(tx.message)
+        # finally:
+        #     transport.close()
 
         return
 

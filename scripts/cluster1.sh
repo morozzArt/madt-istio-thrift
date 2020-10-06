@@ -26,12 +26,13 @@ kubectl apply --context=kind-kind-1 --validate=false -f - <<EOF
 apiVersion: v1
 kind: Service
 metadata:
-  name: countrypage
+  name: countrypage-cluster-ip
   labels:
     app: countrypage
 spec:
   ports:
   - port: 9080
+   targetPort: 9080
     name: http
   selector:
     app: countrypage
@@ -47,29 +48,31 @@ spec:
   selector:
     matchLabels:
       app: countrypage
-      version: v1
   template:
     metadata:
       labels:
         app: countrypage
-        version: v1
     spec:
       containers:
       - name: countrypage
-        image: client/client
+        image: client/client:v1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
+        env:
+          - name: SERVICE_COUNTRY_HOST
+            value: country-cluster-ip
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: country
+  name: country-cluster-ip
   labels:
     app: country
 spec:
   ports:
   - port: 9080
+   targetPort: 9080
     name: http
   selector:
     app: country
@@ -85,16 +88,14 @@ spec:
   selector:
     matchLabels:
       app: country
-      version: v1
   template:
     metadata:
       labels:
         app: country
-        version: v1
     spec:
       containers:
       - name: country
-        image: serv/country
+        image: serv/country:v1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080

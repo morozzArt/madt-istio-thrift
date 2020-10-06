@@ -36,9 +36,9 @@ wrapdocker
 bash scripts/pull_image.sh
 kind create cluster --image kindest/node:v1.18.2 --config=/configs/config_cluster1.yaml --name kind-1
 cd /Clients/super_client
-docker build -t client/client .
+docker build -t client/client:v1 .
 cd /Services/Country
-docker build -t serv/country .
+docker build -t serv/country:v1 .
 bash /scripts/cluster1.sh
 ```
 ```
@@ -48,7 +48,7 @@ wrapdocker
 bash scripts/pull_image.sh
 kind create cluster --image kindest/node:v1.18.2 --config=/configs/config_cluster2.yaml --name kind-2
 cd /Services/Currency
-docker build -t serv/currency .
+docker build -t serv/currency:v1 .
 bash /scripts/cluster2.sh
 ```
 ```
@@ -58,7 +58,7 @@ wrapdocker
 bash scripts/pull_image.sh
 kind create cluster --image kindest/node:v1.18.2 --config=/configs/config_cluster2.yaml --name kind-3
 cd /Services/Time
-docker build -t serv/time .
+docker build -t serv/time:v1 .
 bash /scripts/cluster3.sh
 ```
 

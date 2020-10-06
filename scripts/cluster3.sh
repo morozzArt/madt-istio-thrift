@@ -27,12 +27,13 @@ kubectl apply --context=kind-kind-3 -f - <<EOF
 apiVersion: v1
 kind: Service
 metadata:
-  name: time
+  name: time-cluster-ip
   labels:
     app: time
 spec:
   ports:
   - port: 9080
+   taaargetPort: 9080
     name: http
   selector:
     app: time
@@ -55,7 +56,7 @@ spec:
     spec:
       containers:
       - name: time
-        image: serv/time
+        image: serv/time:v1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080

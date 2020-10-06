@@ -6,4 +6,6 @@ RUN pip install thrift
 COPY ./gen-py ./gen-py
 COPY ./country_server.py ./country_server.py
 
+EXPOSE 9080
+
 CMD ["python", "./country_server.py"]
