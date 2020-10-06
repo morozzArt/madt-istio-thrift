@@ -21,7 +21,7 @@ data:
     {"global": ["$(kubectl get svc -n istio-system istiocoredns -o jsonpath={.spec.clusterIP})"]}
 EOF
 
-kubectl label --context=kine-kind-3 namespace default istio-injection=enabled
+kubectl label --context=kind-kind-3 namespace default istio-injection=enabled
 
 kubectl apply --context=kind-kind-3 -f - <<EOF
 apiVersion: v1

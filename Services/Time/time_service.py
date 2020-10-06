@@ -25,11 +25,11 @@ class TimeManagerHandler:
 	def get_time(self, country_1, country_2):
 		if country_1 not in countries or country_2 not in countries[country_1]:
 			raise Thrift.TApplicationException(TApplicationException.INVALID_MESSAGE_TYPE, "Unknown country")
-		return countries[country_1][country_2]		
+		return countries[country_1][country_2]
 
 handler = TimeManagerHandler()
 processor = TimeManager.Processor(handler)
-transport = TSocket.TServerSocket(port=9092)
+transport = TSocket.TServerSocket(port=9080)
 tfactory = TTransport.TBufferedTransportFactory()
 pfactory = TBinaryProtocol.TBinaryProtocolFactory()
 

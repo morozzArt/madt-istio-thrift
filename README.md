@@ -35,9 +35,9 @@ docker exec -it MADT_kind_Node0 /bin/bash
 wrapdocker
 bash scripts/pull_image.sh
 kind create cluster --image kindest/node:v1.18.2 --config=/configs/config_cluster1.yaml --name kind-1
-cd Client/super_client
+cd /Clients/super_client
 docker build -t client/client .
-cd Services/Country
+cd /Services/Country
 docker build -t serv/country .
 bash /scripts/cluster1.sh
 ```
@@ -47,7 +47,7 @@ docker exec -it MADT_kind_Node1 /bin/bash
 wrapdocker
 bash scripts/pull_image.sh
 kind create cluster --image kindest/node:v1.18.2 --config=/configs/config_cluster2.yaml --name kind-2
-cd Services/Currency
+cd /Services/Currency
 docker build -t serv/currency .
 bash /scripts/cluster2.sh
 ```
@@ -57,7 +57,7 @@ docker exec -it MADT_kind_Node2 /bin/bash
 wrapdocker
 bash scripts/pull_image.sh
 kind create cluster --image kindest/node:v1.18.2 --config=/configs/config_cluster2.yaml --name kind-3
-cd Services/Time
+cd /Services/Time
 docker build -t serv/time .
 bash /scripts/cluster3.sh
 ```

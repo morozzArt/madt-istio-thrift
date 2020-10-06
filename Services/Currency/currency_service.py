@@ -31,7 +31,7 @@ class CurrencyManagerHandler:
 
 handler = CurrencyManagerHandler()
 processor = CurrencyManager.Processor(handler)
-transport = TSocket.TServerSocket(port=9091)
+transport = TSocket.TServerSocket(port=9080)
 tfactory = TTransport.TBufferedTransportFactory()
 pfactory = TBinaryProtocol.TBinaryProtocolFactory()
 
